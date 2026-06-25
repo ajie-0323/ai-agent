@@ -1,0 +1,102 @@
+/* ========================================
+   全局样式 & 设计系统 (Design System)
+   ======================================== */
+
+:root {
+  /* 品牌色 */
+  --color-primary: #667eea;
+  --color-primary-dark: #5a6fd6;
+  --color-secondary: #764ba2;
+  --color-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  /* 中性色 */
+  --color-bg: #f0f2f5;
+  --color-bg-light: #f5f5f5;
+  --color-white: #ffffff;
+  --color-border: #e8e8e8;
+
+  /* 文字色 */
+  --color-text: #333333;
+  --color-text-secondary: #666666;
+  --color-text-muted: #999999;
+
+  /* 气泡色 */
+  --color-bubble-user: var(--color-primary);
+  --color-bubble-user-text: var(--color-white);
+  --color-bubble-ai: var(--color-white);
+  --color-bubble-ai-text: var(--color-text);
+
+  /* 间距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 40px;
+
+  /* 圆角 */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 24px;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  /* 字体 */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 42px;
+
+  /* 头像 */
+  --avatar-size: 36px;
+  --avatar-size-sm: 32px;
+}
+
+/* 全局重置 */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* 响应式断点
+   - 手机:  < 768px
+   - 平板:  768px ~ 1024px
+   - PC:    > 1024px
+*/
