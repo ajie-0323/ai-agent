@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="chat-page">
     <!-- 顶部导航 -->
     <header class="chat-header">
@@ -21,12 +21,35 @@
           </div>
         </template>
         <template v-else>
+          <div class="message-avatar user-avatar">👤</div>
           <div class="message-content">
             <div class="message-bubble message-bubble-user">{{ msg.content }}</div>
           </div>
         </template>
       </div>
 
+      <!-- 空状态：首次进入欢迎提示 -->
+      <div v-if="messages.length === 0 && !loading" class="empty-state">
+        <div class="welcome-card">
+          <div class="welcome-avatar">💕</div>
+          <h3>你好，我是 AI 恋爱大师</h3>
+          <p class="welcome-desc">情感上的困惑、恋爱中的烦恼，都可以向我倾诉~<br/>试试下面的话题，开启我们的对话吧👇</p>
+          <div class="suggestions">
+            <div class="suggestion-chip" @click="quickSend('最近和另一半吵架了，我该怎么打破僵局？')">
+              <span>💔</span> 吵架后如何打破僵局
+            </div>
+            <div class="suggestion-chip" @click="quickSend('我喜欢一个人但不敢表白，怎么办？')">
+              <span>😳</span> 不敢表白怎么办
+            </div>
+            <div class="suggestion-chip" @click="quickSend('和异地恋女友聊天话题越来越少了，怎么维持感情？')">
+              <span>🌏</span> 异地恋怎么维持
+            </div>
+            <div class="suggestion-chip" @click="quickSend('第一次约会去什么地方比较好？有什么建议吗？')">
+              <span>🎯</span> 第一次约会建议
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- AI 回复中：打字机效果 -->
       <div v-if="loading" class="message message-ai">
         <div class="message-avatar">💕</div>
@@ -72,6 +95,10 @@ const currentAiContent = ref("");
 let typewriter = null;
 let abortController = null;
 
+function quickSend(text) {
+  inputText.value = text;
+  sendMessage();
+}
 async function scrollToBottom() {
   await nextTick();
   if (messagesRef.value) {
@@ -299,6 +326,111 @@ onUnmounted(() => {
 .input-wrapper button:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+
+
+/* ===== 空状态欢迎卡片 ===== */
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.welcome-card {
+  text-align: center;
+  max-width: 420px;
+  animation: welcomeFadeIn 0.8s ease both;
+}
+
+@keyframes welcomeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.welcome-avatar {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  background: var(--color-gradient);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.35);
+  animation: welcomeBounce 2s ease-in-out infinite;
+}
+
+@keyframes welcomeBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.welcome-card h3 {
+  font-size: var(--font-size-xl);
+  color: var(--color-text);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.welcome-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+/* --- 快捷建议标签 --- */
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.suggestion-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.suggestion-chip:hover {
+  border-color: var(--color-primary);
+  background: #f8f9ff;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.suggestion-chip:active {
+  transform: translateX(4px) scale(0.98);
+}
+
+.suggestion-chip span {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* --- 用户头像专用样式 --- */
+.user-avatar {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
 }
 
 /* ===== 响应式 ===== */
