@@ -43,6 +43,9 @@ public class ToolCallAgent extends ReActAgent {
     // 禁止内置的工具调用机制，自己维护上下文
     private final ChatOptions chatOptions;
 
+    // Store the AI's last thinking text so step() can return it to frontend
+    private String lastAssistantText;
+
     public ToolCallAgent(ToolCallback[] availableTools) {
         this.availableTools = availableTools;
         this.toolCallingManager = ToolCallingManager.builder().build();
@@ -84,6 +87,7 @@ public class ToolCallAgent extends ReActAgent {
             // 获取工具列表
             List<AssistantMessage.ToolCall> toolCallList = assistantMessage.getToolCalls();
             String result = assistantMessage.getText();
+            this.lastAssistantText = result;
             log.info(getName() + "的思考：" + result);
             log.info(getName() + "选择了" + toolCallList.size() + "个工具准备调用");
             String toolCallInfo = toolCallList.stream()
@@ -106,6 +110,31 @@ public class ToolCallAgent extends ReActAgent {
             return false;
         }
 
+    }
+
+    /**
+     * 执行单步操作：思考 + 行动，返回的内容会通过 SSE 发送到前端
+     * 重点：当 AI 不需要调用工具时，返回其思考文本（含 ``` 代码块标记）
+     */
+    @Override
+    public String step() {
+        try {
+            boolean shouldAct = think();
+            String thought = (lastAssistantText != null) ? lastAssistantText : "";
+            if (!shouldAct) {
+                // 返回 AI 的实际思考文本，而不是硬编码的 "思考完成"
+                return thought.isEmpty() ? "思考完成 - 无需行动" : thought;
+            }
+            String actionResult = act();
+            // 把AI的思考文本和工具执行结果一起返回
+            if (!thought.isEmpty()) {
+                return thought + "\n\n" + actionResult;
+            }
+            return actionResult;
+        } catch (Exception e) {
+            e.getStackTrace();
+            return "步骤执行失败：" + e.getMessage();
+        }
     }
 
     /**
